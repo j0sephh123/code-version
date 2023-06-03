@@ -1,16 +1,15 @@
-import CodeBlock from './components/CodeBlock/CodeBlock';
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import CodeVersion from './components/CodeVersion/CodeVersion';
-import mockBlocks from './mockBlocks';
-
-const firstBlock = mockBlocks[0];
 
 export default function App() {
   return (
-    <div>
-      {/* {firstBlock.content.map(({ code, name }) => (
-        <CodeBlock key={name} code={code} />
-      ))} */}
-      <CodeVersion />
-    </div>
+    <>
+      <div className="navbar bg-base-100">
+        <a className="btn btn-ghost normal-case text-xl">daisyUI</a>
+      </div>
+      <div className="p-4">
+        <CodeVersion />
+      </div>
+    </>
   );
 }

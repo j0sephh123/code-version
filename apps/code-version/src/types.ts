@@ -2,6 +2,7 @@
 interface ContentBlock {
   name: string;
   code: string;
+  explanation?: string;
 }
 
 // Define a type for each mockBlock
