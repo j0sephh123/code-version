@@ -1,0 +1,10 @@
+.CodeBlock {
+  position: relative;
+}
+.CodeBlock svg {
+  cursor: pointer;
+  position: absolute;
+  stroke: #fff;
+  width: 33px;
+  right: 0;
+}
