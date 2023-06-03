@@ -1,7 +1,8 @@
-.CodeBlock {
+.copyBlock {
   position: relative;
 }
-.CodeBlock svg {
+
+.copyIcon {
   cursor: pointer;
   position: absolute;
   stroke: #fff;
