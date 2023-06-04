@@ -1,17 +1,10 @@
-import { useRef } from 'react';
 import { Route } from 'wouter';
 import TheHeader from './components/TheHeader/TheHeader';
 import SingleCodeVersionPage from './components/pages/SingleCodeVersionPage';
 import CodeVersionsPage from './components/pages/CodeVersionsPage';
+import { updateRef } from './store';
 
 export default function App() {
-  const modalRef = useRef<HTMLDialogElement | null>(null);
-
-  const open = () => {
-    // window.my_modal_2.showModal()
-    modalRef.current?.showModal();
-  };
-
   return (
     <>
       <TheHeader />
@@ -23,10 +16,7 @@ export default function App() {
         <Route path="/" component={() => <div>Welcome to hoem page</div>} />
       </div>
 
-      <button className="btn" onClick={open}>
-        open modal
-      </button>
-      <dialog ref={modalRef} id="my_modal_2" className="modal">
+      <dialog ref={updateRef} className="modal">
         <form method="dialog" className="modal-box">
           <h3 className="font-bold text-lg">Hello!</h3>
           <p className="py-4">Press ESC key or click outside to close</p>
