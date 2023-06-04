@@ -1,16 +1,19 @@
 import { proxy, useSnapshot } from 'valtio';
 
-const state = proxy<{ modalRef: HTMLDialogElement | null }>({ modalRef: null });
+export type State = {
+  showModal: (() => void) | undefined;
+};
 
-export const updateRef = (modalRef: HTMLDialogElement | null) => {
-  state.modalRef = modalRef;
+const state = proxy<State>({
+  showModal: undefined,
+});
+
+export const updateRef = (showModal: State['showModal']) => {
+  state.showModal = showModal;
 };
 
 export const openModal = () => {
-  console.log(state.modalRef);
-  if (state.modalRef) {
-    state.modalRef?.showModal();
-  }
+  state.showModal?.();
 };
 
 export const useStore = () => useSnapshot(state);

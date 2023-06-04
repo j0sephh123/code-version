@@ -16,7 +16,10 @@ export default function App() {
         <Route path="/" component={() => <div>Welcome to hoem page</div>} />
       </div>
 
-      <dialog ref={updateRef} className="modal">
+      <dialog
+        ref={(ref) => updateRef(ref?.showModal.bind(ref))}
+        className="modal"
+      >
         <form method="dialog" className="modal-box">
           <h3 className="font-bold text-lg">Hello!</h3>
           <p className="py-4">Press ESC key or click outside to close</p>
