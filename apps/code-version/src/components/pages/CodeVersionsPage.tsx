@@ -2,6 +2,8 @@ import { Link } from 'wouter';
 import { useEffect, useState } from 'react';
 import { MockBlocks } from '../../types';
 
+// TODO add https://daisyui.com/components/badge/
+
 export default function CodeVersionsPage() {
   const [mockBlocks, setMockBlocks] = useState<MockBlocks|null>(null);
 

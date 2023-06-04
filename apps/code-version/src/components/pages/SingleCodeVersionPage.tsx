@@ -15,14 +15,10 @@ export default function SingleCodeVersionPage({ id }: Props) {
       .then(setBlock);
   }, [id]);
 
-  if (!block) {
-    return;
-  }
-
   return (
     <div>
       SingleCodeVersionPage {id}
-      <CodeVersion block={block} />
+      {block && <CodeVersion block={block} />}
     </div>
   );
 }
