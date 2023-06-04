@@ -46,6 +46,58 @@ const mockBlocks: MockBlocks = [
       },
     ],
   },
+  {
+    name: 'Loops',
+    content: [
+      {
+        name: 'Basic for loop',
+        code: `for (let i = 0; i < 5; i++) { 
+          console.log(i); 
+        }`,
+        explanation: `This code demonstrates a simple JavaScript for loop. The loop starts with i equals 0 and continues until i is less than 5, incrementing i by one with each iteration. For each loop, the current value of i is logged to the console.`,
+      },
+      {
+        name: 'Basic while loop',
+        code: `let i = 0;
+        while (i < 5) {
+          console.log(i);
+          i++;
+        }
+        `,
+        explanation: `This code demonstrates a simple while loop in JavaScript. The loop starts with i equals 0 and continues until i is less than 5. In each iteration of the loop, the current value of i is logged to the console, and then i is incremented by one.`,
+      },
+      {
+        name: 'Do...while loop',
+        code: `let i = 0;
+        do {
+          console.log(i);
+          i++;
+        } while (i < 5);
+        `,
+        explanation: `This code demonstrates a do...while loop in JavaScript. This loop will first do the action (log i to the console and increment i) and then check the condition (i < 5). This means the loop will always execute at least once, even if the condition is false at the start.`,
+      },
+      {
+        name: 'For...of loop',
+        code: `let array = [1, 2, 3, 4, 5];
+        for (const element of array) {
+          console.log(element);
+        }
+        `,
+        explanation: `This code demonstrates a for...of loop in JavaScript. This loop iterates over iterable objects (including array, map, set, string, etc). Here, it logs each element of the array to the console.`,
+      },
+      {
+        name: 'For...in loop',
+        code: `let obj = {a: 1, b: 2, c: 3};
+        for (const prop in obj) {
+          if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+            console.log(\`\${prop}: \${obj[prop]}\`);
+          }
+        }
+        `,
+        explanation: `This code demonstrates a for...in loop in JavaScript. This type of loop is used to iterate over the properties of an object. Here, it logs each property and its value of the object to the console. The hasOwnProperty call is a guard against prototype pollution.`,
+      },
+    ],
+  },
 ];
 
 export default mockBlocks;

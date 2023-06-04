@@ -1,1 +1,5 @@
-[] Don't forget to minify https://tailwindcss.com/docs/optimizing-for-production
+Used libs:  
+- __nx__ as monorepo
+- __Vite__ as a React bundler
+- __wouter__ for client side routing
+- __daisyUI__ for styling

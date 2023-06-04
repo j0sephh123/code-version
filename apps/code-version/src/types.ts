@@ -6,7 +6,7 @@ interface ContentBlock {
 }
 
 // Define a type for each mockBlock
-interface MockBlock {
+export interface MockBlock {
   name: string;
   content: ContentBlock[];
 }
