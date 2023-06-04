@@ -1,7 +1,17 @@
+import CodeVersion from "../components/CodeVersion/CodeVersion";
+import mockBlocks from "../mockBlocks";
+
 type Props = {
   id: string;
 };
 
+
+
 export default function SingleCodeVersionPage({id}:Props) {
-  return <div>SingleCodeVersionPage {id}</div>;
+  const block = mockBlocks[+id];
+  
+
+  return <div>SingleCodeVersionPage {id}
+    <CodeVersion block={block} />
+  </div>;
 }
