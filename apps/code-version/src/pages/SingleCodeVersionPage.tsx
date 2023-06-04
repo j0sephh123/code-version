@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import CodeVersion from '../CodeVersion/CodeVersion';
-import { MockBlock } from '../../types';
+import CodeVersion from '../components/CodeVersion/CodeVersion';
+import { MockBlock } from '../types';
 
 type Props = {
   id: string;

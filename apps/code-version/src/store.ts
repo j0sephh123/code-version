@@ -8,7 +8,7 @@ const state = proxy<State>({
   showModal: undefined,
 });
 
-export const updateRef = (showModal: State['showModal']) => {
+export const bindShowModal = (showModal: State['showModal']) => {
   state.showModal = showModal;
 };
 

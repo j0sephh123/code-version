@@ -1,8 +1,9 @@
 import { Route } from 'wouter';
 import TheHeader from './components/TheHeader/TheHeader';
-import SingleCodeVersionPage from './components/pages/SingleCodeVersionPage';
-import CodeVersionsPage from './components/pages/CodeVersionsPage';
-import { updateRef } from './store';
+import CodeVersionsPage from './pages/CodeVersionsPage';
+import SingleCodeVersionPage from './pages/SingleCodeVersionPage';
+import HomePage from './pages/HomePage';
+import CreateCodeVersionDialog from './components/CreateCodeVersionDialog/CreateCodeVersionDialog';
 
 export default function App() {
   return (
@@ -13,21 +14,9 @@ export default function App() {
           {({ id }) => <SingleCodeVersionPage id={id} />}
         </Route>
         <Route path="/code-versions" component={CodeVersionsPage} />
-        <Route path="/" component={() => <div>Welcome to hoem page</div>} />
+        <Route path="/" component={HomePage} />
       </div>
-
-      <dialog
-        ref={(ref) => updateRef(ref?.showModal.bind(ref))}
-        className="modal"
-      >
-        <form method="dialog" className="modal-box">
-          <h3 className="font-bold text-lg">Hello!</h3>
-          <p className="py-4">Press ESC key or click outside to close</p>
-        </form>
-        <form method="dialog" className="modal-backdrop">
-          <button>close</button>
-        </form>
-      </dialog>
+      <CreateCodeVersionDialog />
     </>
   );
 }
