@@ -1,7 +1,6 @@
-import { MockBlocks } from './types';
-
-const mockBlocks: MockBlocks = [
+const mockBlocks = [
   {
+    id: '0',
     name: 'A function',
     content: [
       {
@@ -47,6 +46,7 @@ const mockBlocks: MockBlocks = [
     ],
   },
   {
+    id: '1',
     name: 'Loops',
     content: [
       {

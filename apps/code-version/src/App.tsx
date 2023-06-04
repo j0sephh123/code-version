@@ -1,8 +1,7 @@
 import { Route } from 'wouter';
 import TheHeader from './components/TheHeader/TheHeader';
-import mockBlocks from './mockBlocks';
-import CodeVersionsPage from './pages/CodeVersionsPage';
-import SingleCodeVersionPage from './pages/SingleCodeVersionPage';
+import SingleCodeVersionPage from './components/pages/SingleCodeVersionPage';
+import CodeVersionsPage from './components/pages/CodeVersionsPage';
 
 export default function App() {
   return (
@@ -14,8 +13,6 @@ export default function App() {
         </Route>
         <Route path="/code-versions" component={CodeVersionsPage} />
         <Route path="/" component={() => <div>Welcome to hoem page</div>} />
-
-        {/* <CodeVersion block={block} /> */}
       </div>
     </>
   );
