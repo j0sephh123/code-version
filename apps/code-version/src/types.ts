@@ -1,5 +1,5 @@
 // Define a type for each content block
-interface ContentBlock {
+export interface ContentBlock {
   name: string;
   code: string;
   explanation?: string;

@@ -1,5 +1,5 @@
 import { Link } from 'wouter';
-import { openModal } from '../../store';
+import { modalOpen } from '../../store';
 
 /* eslint-disable jsx-a11y/anchor-is-valid */
 export default function TheHeader() {
@@ -15,7 +15,7 @@ export default function TheHeader() {
       </div>
 
       <div className="navbar-end">
-        <button onClick={openModal} className="btn btn-ghost btn-circle">
+        <button onClick={modalOpen} className="btn btn-ghost btn-circle">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

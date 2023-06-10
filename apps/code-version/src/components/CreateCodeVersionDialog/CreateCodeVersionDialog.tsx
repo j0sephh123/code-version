@@ -1,68 +1,96 @@
-import { useState } from 'react';
-import { bindShowModal } from '../../store';
+import { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
+import Wrapper from './Wrapper';
+import VersionsSwitcher, { defaultVersion } from './VersionsSwitcher';
+import TextArea from './TextArea';
 
-const maxVersions = 5;
+type FormState = 'allowedToSubmit' | 'loading' | 'disabled';
+
+type GetValueRef<T> = {
+  getValue: () => T;
+};
+
+type Data = {
+  code: string;
+  explanation: string;
+}[];
 
 export default function CreateCodeVersionDialog() {
-  const [version, setVersion] = useState(1);
+  const [version, setVersion] = useState(defaultVersion);
+  const [data, setData] = useState<Data>([]);
+  const codeRef = useRef<GetValueRef<string>>({
+    getValue: () => '',
+  });
+  const explanationRef = useRef<GetValueRef<string>>({
+    getValue: () => '',
+  });
+  const [formState, setFormState] = useState<FormState>('disabled');
+  const [nameValue, setNameValue] = useState('');
+
+  // const getContentBlocks = () => {}
+
+  const handleCreate = () => {
+    console.log({ nameValue });
+
+    // getCurrentVersion
+
+    // modalClose();
+
+    // const version = versionRef.current.getValue();
+
+    console.log(data);
+
+    setNameValue('');
+  };
+
+  useEffect(() => {
+    const code = codeRef.current.getValue();
+    const explanation = explanationRef.current.getValue();
+
+    data[version] = { code, explanation };
+  }, [data, version]);
+
+  console.log(data);
 
   return (
-    <dialog
-      ref={(ref) => bindShowModal(ref?.showModal.bind(ref))}
-      className="modal"
-    >
+    <Wrapper>
       <form method="dialog" className="modal-box">
         <h3 className="font-bold text-lg">Create a code version</h3>
         <div className="py-2"></div>
         <input
+          value={nameValue}
+          onChange={(e) => setNameValue(e.target.value)}
           type="text"
           placeholder="Name"
           className="input input-bordered w-full"
         />
 
-        <div className="flex items-center pt-6 gap-4">
-          <input
-            onClick={() => setVersion((prevVersion) => prevVersion - 1)}
-            type="button"
-            value="Previous"
-            className={clsx(
-              'btn',
-              version !== 1 && 'btn-primary',
-              version === 1 && 'btn-disabled'
-            )}
-          />
-          <p>
-            Version: <span className="font-extrabold text-xl">{version}</span>
-          </p>
-          <input
-            onClick={() => setVersion((prevVersion) => prevVersion + 1)}
-            type="button"
-            value="Next"
-            className={clsx(
-              'btn',
-              version !== maxVersions && 'btn-primary',
-              version === maxVersions && 'btn-disabled'
-            )}
-          />
-        </div>
+        <VersionsSwitcher version={version} setVersion={setVersion} />
+        <TextArea ref={codeRef} placeholder="Code" />
+        <TextArea ref={explanationRef} placeholder="Explanation" />
 
-        <textarea
-          className="textarea textarea-bordered w-full mt-4"
-          placeholder="Code"
-        ></textarea>
-        <textarea
-          className="textarea textarea-bordered w-full mt-2"
-          placeholder="Explanation"
-        ></textarea>
-
-        <button className="btn btn-outline btn-info btn-block mt-2">
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            handleCreate();
+          }}
+          className={clsx(
+            'btn',
+            'btn-outline',
+            'btn-info',
+            'btn-block',
+            'mt-2'
+            // 'btn-disabled'
+          )}
+        >
+          {/* <span className="loading loading-spinner"></span>
+          Creating... */}
           Create
         </button>
       </form>
       <form method="dialog" className="modal-backdrop">
         <button>close</button>
       </form>
-    </dialog>
+    </Wrapper>
   );
 }

@@ -1,19 +1,29 @@
 import { proxy, useSnapshot } from 'valtio';
 
 export type State = {
-  showModal: (() => void) | undefined;
+  modalShow: (() => void) | undefined;
+  modalClose: (() => void) | undefined;
 };
 
 const state = proxy<State>({
-  showModal: undefined,
+  modalShow: undefined,
+  modalClose: undefined,
 });
 
-export const bindShowModal = (showModal: State['showModal']) => {
-  state.showModal = showModal;
+export const bindModalControls = (
+  modalShow: State['modalShow'],
+  modalClose: State['modalClose']
+) => {
+  state.modalShow = modalShow;
+  state.modalClose = modalClose;
 };
 
-export const openModal = () => {
-  state.showModal?.();
+export const modalOpen = () => {
+  state.modalShow?.();
+};
+
+export const modalClose = () => {
+  state.modalClose?.();
 };
 
 export const useStore = () => useSnapshot(state);
