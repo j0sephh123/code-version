@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import clsx from 'clsx';
 import Wrapper from './Wrapper';
 import VersionsSwitcher from './VersionsSwitcher';
 import { Data, SetVersions } from './types';
 import { initialData, initialVersions } from './constants';
 import useFieldValues from './useFieldValues';
 import Field from './Field';
+import CreateBtn from './CreateBtn';
 
 export default function CreateCodeVersionDialog() {
   const [{ currentVersion, previousVersion }, setVersion] =
@@ -16,9 +16,7 @@ export default function CreateCodeVersionDialog() {
     getTextAreaValues,
     setCodeRefValue,
     setExplanationRefValue,
-    codeRef,
-    explanationRef,
-    nameRef,
+    refs,
     getNameValue,
   } = useFieldValues();
 
@@ -73,41 +71,12 @@ export default function CreateCodeVersionDialog() {
 
   return (
     <Wrapper>
-      <form method="dialog" className="modal-box">
-        <h3 className="font-bold text-lg">Create a code version</h3>
-        <Field ref={nameRef} type="input" placeholder="Name" />
-        <VersionsSwitcher version={currentVersion} setVersion={setVersion} />
-        <Field type="textarea" ref={codeRef} placeholder="Code" />
-        <Field type="textarea" ref={explanationRef} placeholder="Explanation" />
+      <Field ref={refs.name} type="input" placeholder="Name" />
+      <VersionsSwitcher version={currentVersion} setVersion={setVersion} />
+      <Field ref={refs.code} type="textarea" placeholder="Code" />
+      <Field ref={refs.explanation} type="textarea" placeholder="Explanation" />
 
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            handleCreate();
-          }}
-          className={clsx(
-            'btn',
-            'btn-outline',
-            'btn-info',
-            'btn-block',
-            'mt-2'
-            // formState === 'disabled' && 'btn-disabled'
-          )}
-        >
-          {/* {formState === 'loading' ? (
-            <>
-              <span className="loading loading-spinner"></span> 
-              Creating...
-            </>
-          ) : (
-            'Create'
-          )} */}
-          Create
-        </button>
-      </form>
-      <form method="dialog" className="modal-backdrop">
-        <button>close</button>
-      </form>
+      <CreateBtn onClick={handleCreate} />
     </Wrapper>
   );
 }

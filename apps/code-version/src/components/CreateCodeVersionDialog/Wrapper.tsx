@@ -1,8 +1,7 @@
-import { PropsWithChildren } from "react";
-import { bindModalControls } from "../../store";
+import { PropsWithChildren } from 'react';
+import { bindModalControls } from '../../store';
 
-
-export default function Wrapper({children}:PropsWithChildren) {
+export default function Wrapper({ children }: PropsWithChildren) {
   return (
     <dialog
       ref={(ref) =>
@@ -10,7 +9,13 @@ export default function Wrapper({children}:PropsWithChildren) {
       }
       className="modal"
     >
-      {children}
+      <form method="dialog" className="modal-box">
+        <h3 className="font-bold text-lg">Create a code version</h3>
+        {children}
+      </form>
+      <form method="dialog" className="modal-backdrop">
+        <button>close</button>
+      </form>
     </dialog>
   );
 }

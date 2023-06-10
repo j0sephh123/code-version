@@ -1,15 +1,20 @@
-import { useCallback, useRef } from 'react';
-import { initialRefValues } from './constants';
-import { ValueRef } from './types';
+import { useCallback, createRef } from 'react';
+
+type ValueRef = {
+  getValue: () => string;
+  setValue: (val: string) => void;
+};
+
+const refs = {
+  explanation: createRef<ValueRef>(),
+  code: createRef<ValueRef>(),
+  name: createRef<ValueRef>(),
+};
 
 export default function useFieldValues() {
-  const explanationRef = useRef<ValueRef>(initialRefValues);
-  const codeRef = useRef<ValueRef>(initialRefValues);
-  const nameRef = useRef<ValueRef>(initialRefValues);
-
   const getTextAreaValues = useCallback(() => {
-    const code = codeRef.current.getValue();
-    const explanation = explanationRef.current.getValue();
+    const code = refs.code.current?.getValue() || '';
+    const explanation = refs.explanation.current?.getValue() || '';
 
     return {
       code,
@@ -18,24 +23,22 @@ export default function useFieldValues() {
   }, []);
 
   const setCodeRefValue = (newValue: string) => {
-    codeRef.current.setValue(newValue);
+    refs.code.current?.setValue(newValue);
   };
 
   const setExplanationRefValue = (newValue: string) => {
-    explanationRef.current.setValue(newValue);
+    refs.explanation.current?.setValue(newValue);
   };
 
   const getNameValue = () => {
-    return nameRef.current.getValue() || '';
+    return refs.name.current?.getValue() || '';
   };
 
   return {
     getTextAreaValues,
     setCodeRefValue,
     setExplanationRefValue,
-    codeRef,
-    explanationRef,
-    nameRef,
     getNameValue,
+    refs,
   };
 }
