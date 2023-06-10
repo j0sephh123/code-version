@@ -1,49 +1,26 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import Wrapper from './Wrapper';
-import VersionsSwitcher, { defaultVersion } from './VersionsSwitcher';
-import TextArea from './TextArea';
-
-type FormState = 'allowedToSubmit' | 'loading' | 'disabled';
-
-type ValueRef = {
-  getValue: () => string;
-  setValue: (value: string) => void;
-};
-
-type Data = {
-  code: string;
-  explanation: string;
-}[];
-
-const initialData: Data = [];
+import VersionsSwitcher from './VersionsSwitcher';
+import { Data, SetVersions } from './types';
+import { initialData, initialVersions } from './constants';
+import useFieldValues from './useFieldValues';
+import Field from './Field';
 
 export default function CreateCodeVersionDialog() {
-  const [{ currentVersion, previousVersion }, setVersion] = useState<any>({
-    currentVersion: defaultVersion,
-    previousVersion: null,
-  });
+  const [{ currentVersion, previousVersion }, setVersion] =
+    useState<SetVersions>(initialVersions);
   const [data, setData] = useState<Data>(initialData);
-  const codeRef = useRef<ValueRef>({
-    getValue: () => '',
-    setValue: () => undefined,
-  });
-  const explanationRef = useRef<ValueRef>({
-    getValue: () => '',
-    setValue: () => undefined,
-  });
-  const [formState, setFormState] = useState<FormState>('disabled');
-  const [nameValue, setNameValue] = useState('');
 
-  const getTextAreaValues = () => {
-    const code = codeRef.current.getValue();
-    const explanation = explanationRef.current.getValue();
-
-    return {
-      code,
-      explanation,
-    };
-  };
+  const {
+    getTextAreaValues,
+    setCodeRefValue,
+    setExplanationRefValue,
+    codeRef,
+    explanationRef,
+    nameRef,
+    getNameValue,
+  } = useFieldValues();
 
   const handleCreate = () => {
     const textAreaValues = getTextAreaValues();
@@ -64,9 +41,7 @@ export default function CreateCodeVersionDialog() {
       allData = newData;
     }
 
-    console.log(allData);
-
-    setNameValue('');
+    console.log(allData, getNameValue());
   };
 
   useEffect(() => {
@@ -87,33 +62,23 @@ export default function CreateCodeVersionDialog() {
         return prevData;
       });
     }
-  }, [previousVersion]);
+  }, [getTextAreaValues, previousVersion]);
 
   useEffect(() => {
     const values = data[currentVersion];
 
-    codeRef.current.setValue(values ? values.code : '');
-    explanationRef.current.setValue(values ? values.explanation : '');
-
-    console.log(values);
-  }, [currentVersion, data]);
+    setCodeRefValue(values ? values.code : '');
+    setExplanationRefValue(values ? values.explanation : '');
+  }, [currentVersion, data, setCodeRefValue, setExplanationRefValue]);
 
   return (
     <Wrapper>
       <form method="dialog" className="modal-box">
         <h3 className="font-bold text-lg">Create a code version</h3>
-        <div className="py-2"></div>
-        <input
-          value={nameValue}
-          onChange={(e) => setNameValue(e.target.value)}
-          type="text"
-          placeholder="Name"
-          className="input input-bordered w-full"
-        />
-
+        <Field ref={nameRef} type="input" placeholder="Name" />
         <VersionsSwitcher version={currentVersion} setVersion={setVersion} />
-        <TextArea ref={codeRef} placeholder="Code" />
-        <TextArea ref={explanationRef} placeholder="Explanation" />
+        <Field type="textarea" ref={codeRef} placeholder="Code" />
+        <Field type="textarea" ref={explanationRef} placeholder="Explanation" />
 
         <button
           onClick={(e) => {
@@ -126,11 +91,17 @@ export default function CreateCodeVersionDialog() {
             'btn-info',
             'btn-block',
             'mt-2'
-            // 'btn-disabled'
+            // formState === 'disabled' && 'btn-disabled'
           )}
         >
-          {/* <span className="loading loading-spinner"></span>
-          Creating... */}
+          {/* {formState === 'loading' ? (
+            <>
+              <span className="loading loading-spinner"></span> 
+              Creating...
+            </>
+          ) : (
+            'Create'
+          )} */}
           Create
         </button>
       </form>

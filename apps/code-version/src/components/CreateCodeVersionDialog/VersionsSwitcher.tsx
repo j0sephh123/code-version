@@ -1,15 +1,11 @@
 import clsx from 'clsx';
 import { Dispatch, SetStateAction } from 'react';
-
-const maxVersions = 4;
-
-export const defaultVersion = 0;
+import { SetVersions } from './types';
+import { defaultVersion, maxVersions } from './constants';
 
 export type VersionSwitcherProps = {
   version: number;
-  setVersion: Dispatch<
-    SetStateAction<{ currentVersion: number; previousVersion: number | null }>
-  >;
+  setVersion: Dispatch<SetStateAction<SetVersions>>;
 };
 
 const VersionsSwitcher = ({ version, setVersion }: VersionSwitcherProps) => {
