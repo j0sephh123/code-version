@@ -14,6 +14,11 @@ const TextArea = forwardRef(({ placeholder }: Props, ref) => {
         getValue() {
           return valueRef.current?.value;
         },
+        setValue(value: string) {
+          if (valueRef.current) {
+            valueRef.current.value = value;
+          }
+        },
       };
     },
     []

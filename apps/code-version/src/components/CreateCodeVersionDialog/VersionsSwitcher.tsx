@@ -1,19 +1,29 @@
 import clsx from 'clsx';
+import { Dispatch, SetStateAction } from 'react';
 
 const maxVersions = 4;
 
 export const defaultVersion = 0;
 
-type Props = {
+export type VersionSwitcherProps = {
   version: number;
-  setVersion: React.Dispatch<React.SetStateAction<number>>;
+  setVersion: Dispatch<
+    SetStateAction<{ currentVersion: number; previousVersion: number | null }>
+  >;
 };
 
-const VersionsSwitcher = ({ version, setVersion }: Props) => {
+const VersionsSwitcher = ({ version, setVersion }: VersionSwitcherProps) => {
   return (
     <div className="flex items-center pt-6 gap-4">
       <input
-        onClick={() => setVersion((prevVersion) => prevVersion - 1)}
+        onClick={() =>
+          setVersion(({ currentVersion }) => {
+            return {
+              previousVersion: currentVersion,
+              currentVersion: currentVersion - 1,
+            };
+          })
+        }
         type="button"
         value="Previous"
         className={clsx(
@@ -26,7 +36,14 @@ const VersionsSwitcher = ({ version, setVersion }: Props) => {
         Version: <span className="font-extrabold text-xl">{version}</span>
       </p>
       <input
-        onClick={() => setVersion((prevVersion) => prevVersion + 1)}
+        onClick={() =>
+          setVersion(({ currentVersion }) => {
+            return {
+              previousVersion: currentVersion,
+              currentVersion: currentVersion + 1,
+            };
+          })
+        }
         type="button"
         value="Next"
         className={clsx(

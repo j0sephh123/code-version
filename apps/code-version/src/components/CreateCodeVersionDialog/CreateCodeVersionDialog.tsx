@@ -6,8 +6,9 @@ import TextArea from './TextArea';
 
 type FormState = 'allowedToSubmit' | 'loading' | 'disabled';
 
-type GetValueRef<T> = {
-  getValue: () => T;
+type ValueRef = {
+  getValue: () => string;
+  setValue: (value: string) => void;
 };
 
 type Data = {
@@ -15,42 +16,87 @@ type Data = {
   explanation: string;
 }[];
 
+const initialData: Data = [];
+
 export default function CreateCodeVersionDialog() {
-  const [version, setVersion] = useState(defaultVersion);
-  const [data, setData] = useState<Data>([]);
-  const codeRef = useRef<GetValueRef<string>>({
-    getValue: () => '',
+  const [{ currentVersion, previousVersion }, setVersion] = useState<any>({
+    currentVersion: defaultVersion,
+    previousVersion: null,
   });
-  const explanationRef = useRef<GetValueRef<string>>({
+  const [data, setData] = useState<Data>(initialData);
+  const codeRef = useRef<ValueRef>({
     getValue: () => '',
+    setValue: () => undefined,
+  });
+  const explanationRef = useRef<ValueRef>({
+    getValue: () => '',
+    setValue: () => undefined,
   });
   const [formState, setFormState] = useState<FormState>('disabled');
   const [nameValue, setNameValue] = useState('');
 
-  // const getContentBlocks = () => {}
+  const getTextAreaValues = () => {
+    const code = codeRef.current.getValue();
+    const explanation = explanationRef.current.getValue();
+
+    return {
+      code,
+      explanation,
+    };
+  };
 
   const handleCreate = () => {
-    console.log({ nameValue });
+    const textAreaValues = getTextAreaValues();
 
-    // getCurrentVersion
+    let allData: any = [];
 
-    // modalClose();
+    if (data[currentVersion] !== undefined) {
+      allData = data.map((item, index) => {
+        if (index === currentVersion) {
+          item = textAreaValues;
+        }
+        return item;
+      });
+    } else {
+      const newData = [...data];
 
-    // const version = versionRef.current.getValue();
+      newData[currentVersion] = textAreaValues;
+      allData = newData;
+    }
 
-    console.log(data);
+    console.log(allData);
 
     setNameValue('');
   };
 
   useEffect(() => {
-    const code = codeRef.current.getValue();
-    const explanation = explanationRef.current.getValue();
+    const textAreaValues = getTextAreaValues();
 
-    data[version] = { code, explanation };
-  }, [data, version]);
+    if (previousVersion !== null) {
+      setData((prevData) => {
+        if (prevData[previousVersion] !== undefined) {
+          return prevData.map((prevItem, index) => {
+            if (index === previousVersion) {
+              prevItem = textAreaValues;
+            }
+            return prevItem;
+          });
+        }
 
-  console.log(data);
+        prevData[previousVersion] = textAreaValues;
+        return prevData;
+      });
+    }
+  }, [previousVersion]);
+
+  useEffect(() => {
+    const values = data[currentVersion];
+
+    codeRef.current.setValue(values ? values.code : '');
+    explanationRef.current.setValue(values ? values.explanation : '');
+
+    console.log(values);
+  }, [currentVersion, data]);
 
   return (
     <Wrapper>
@@ -65,7 +111,7 @@ export default function CreateCodeVersionDialog() {
           className="input input-bordered w-full"
         />
 
-        <VersionsSwitcher version={version} setVersion={setVersion} />
+        <VersionsSwitcher version={currentVersion} setVersion={setVersion} />
         <TextArea ref={codeRef} placeholder="Code" />
         <TextArea ref={explanationRef} placeholder="Explanation" />
 
