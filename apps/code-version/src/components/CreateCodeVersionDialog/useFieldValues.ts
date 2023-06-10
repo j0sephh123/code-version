@@ -22,7 +22,7 @@ export default function useFieldValues() {
   };
 
   const setExplanationRefValue = (newValue: string) => {
-    codeRef.current.setValue(newValue);
+    explanationRef.current.setValue(newValue);
   };
 
   const getNameValue = () => {
