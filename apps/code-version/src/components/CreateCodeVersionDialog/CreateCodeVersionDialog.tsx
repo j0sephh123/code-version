@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Wrapper from './Wrapper';
 import VersionsSwitcher from './VersionsSwitcher';
-import { Data, SetVersions } from './types';
+import { SubmitData, SetVersions } from './types';
 import { initialData, initialVersions } from './constants';
 import useFieldValues from './useFieldValues';
 import Field from './Field';
@@ -10,7 +10,7 @@ import CreateBtn from './CreateBtn';
 export default function CreateCodeVersionDialog() {
   const [{ currentVersion, previousVersion }, setVersion] =
     useState<SetVersions>(initialVersions);
-  const [data, setData] = useState<Data>(initialData);
+  const [submitData, setSubmitData] = useState<SubmitData>(initialData);
 
   const {
     getTextAreaValues,
@@ -23,17 +23,17 @@ export default function CreateCodeVersionDialog() {
   const handleCreate = () => {
     const textAreaValues = getTextAreaValues();
 
-    let allData: any = [];
+    let allData: SubmitData = [];
 
-    if (data[currentVersion] !== undefined) {
-      allData = data.map((item, index) => {
+    if (submitData[currentVersion] !== undefined) {
+      allData = submitData.map((item, index) => {
         if (index === currentVersion) {
           item = textAreaValues;
         }
         return item;
       });
     } else {
-      const newData = [...data];
+      const newData = [...submitData];
 
       newData[currentVersion] = textAreaValues;
       allData = newData;
@@ -46,7 +46,7 @@ export default function CreateCodeVersionDialog() {
     const textAreaValues = getTextAreaValues();
 
     if (previousVersion !== null) {
-      setData((prevData) => {
+      setSubmitData((prevData) => {
         if (prevData[previousVersion] !== undefined) {
           return prevData.map((prevItem, index) => {
             if (index === previousVersion) {
@@ -63,11 +63,11 @@ export default function CreateCodeVersionDialog() {
   }, [getTextAreaValues, previousVersion]);
 
   useEffect(() => {
-    const values = data[currentVersion];
+    const values = submitData[currentVersion];
 
     setCodeRefValue(values ? values.code : '');
     setExplanationRefValue(values ? values.explanation : '');
-  }, [currentVersion, data, setCodeRefValue, setExplanationRefValue]);
+  }, [currentVersion, submitData, setCodeRefValue, setExplanationRefValue]);
 
   return (
     <Wrapper>
@@ -75,7 +75,6 @@ export default function CreateCodeVersionDialog() {
       <VersionsSwitcher version={currentVersion} setVersion={setVersion} />
       <Field ref={refs.code} type="textarea" placeholder="Code" />
       <Field ref={refs.explanation} type="textarea" placeholder="Explanation" />
-
       <CreateBtn onClick={handleCreate} />
     </Wrapper>
   );

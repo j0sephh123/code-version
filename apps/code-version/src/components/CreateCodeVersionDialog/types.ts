@@ -8,7 +8,7 @@ export type ValueRef = {
   setValue: (value: string) => void;
 };
 
-export type Data = {
+export type SubmitData = {
   code: string;
   explanation: string;
 }[];
