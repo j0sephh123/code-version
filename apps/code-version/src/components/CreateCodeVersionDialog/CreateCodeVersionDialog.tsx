@@ -1,16 +1,45 @@
 import { useEffect, useState } from 'react';
 import Wrapper from './Wrapper';
 import VersionsSwitcher from './VersionsSwitcher';
-import { SubmitData, SetVersions } from './types';
+import { Versions, SetVersions, Version } from './types';
 import { initialData, initialVersions } from './constants';
 import useFieldValues from './useFieldValues';
 import Field from './Field';
 import CreateBtn from './CreateBtn';
 
+// Define a helper function
+/**
+ *
+ * @param versionsData - array
+ * @param indexToUpdate - current or previous versions index
+ * @param newTextAreaValues - new values to set
+ * @returns
+ */
+const updateVersions = (
+  versionsData: Versions,
+  indexToUpdate: number,
+  newTextAreaValues: Version
+) => {
+  if (versionsData[indexToUpdate] !== undefined) {
+    return versionsData.map((item, index) => {
+      if (index === indexToUpdate) {
+        return newTextAreaValues;
+      }
+      return item;
+    });
+  }
+
+  return [
+    ...versionsData.slice(0, indexToUpdate),
+    newTextAreaValues,
+    ...versionsData.slice(indexToUpdate + 1),
+  ];
+};
+
 export default function CreateCodeVersionDialog() {
   const [{ currentVersion, previousVersion }, setVersion] =
     useState<SetVersions>(initialVersions);
-  const [submitData, setSubmitData] = useState<SubmitData>(initialData);
+  const [versions, setVersions] = useState<Versions>(initialData);
 
   const {
     getTextAreaValues,
@@ -21,53 +50,28 @@ export default function CreateCodeVersionDialog() {
   } = useFieldValues();
 
   const handleCreate = () => {
-    const textAreaValues = getTextAreaValues();
+    const versionsSubmitData = updateVersions(
+      versions,
+      currentVersion,
+      getTextAreaValues()
+    );
 
-    let allData: SubmitData = [];
-
-    if (submitData[currentVersion] !== undefined) {
-      allData = submitData.map((item, index) => {
-        if (index === currentVersion) {
-          item = textAreaValues;
-        }
-        return item;
-      });
-    } else {
-      const newData = [...submitData];
-
-      newData[currentVersion] = textAreaValues;
-      allData = newData;
-    }
-
-    console.log(allData, getNameValue());
+    console.log(versionsSubmitData, getNameValue());
   };
 
   useEffect(() => {
-    const textAreaValues = getTextAreaValues();
-
-    if (previousVersion !== null) {
-      setSubmitData((prevData) => {
-        if (prevData[previousVersion] !== undefined) {
-          return prevData.map((prevItem, index) => {
-            if (index === previousVersion) {
-              prevItem = textAreaValues;
-            }
-            return prevItem;
-          });
-        }
-
-        prevData[previousVersion] = textAreaValues;
-        return prevData;
-      });
-    }
+    if (previousVersion === null) return;
+    setVersions((prevVersions) =>
+      updateVersions(prevVersions, previousVersion, getTextAreaValues())
+    );
   }, [getTextAreaValues, previousVersion]);
 
   useEffect(() => {
-    const values = submitData[currentVersion];
+    const values = versions[currentVersion];
 
     setCodeRefValue(values ? values.code : '');
     setExplanationRefValue(values ? values.explanation : '');
-  }, [currentVersion, submitData, setCodeRefValue, setExplanationRefValue]);
+  }, [currentVersion, versions, setCodeRefValue, setExplanationRefValue]);
 
   return (
     <Wrapper>

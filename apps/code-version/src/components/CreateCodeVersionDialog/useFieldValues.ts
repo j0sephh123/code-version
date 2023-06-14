@@ -1,4 +1,5 @@
 import { useCallback, createRef } from 'react';
+import { Version } from './types';
 
 type ValueRef = {
   getValue: () => string;
@@ -12,7 +13,7 @@ const refs = {
 };
 
 export default function useFieldValues() {
-  const getTextAreaValues = useCallback(() => {
+  const getTextAreaValues = useCallback((): Version => {
     const code = refs.code.current?.getValue() || '';
     const explanation = refs.explanation.current?.getValue() || '';
 
