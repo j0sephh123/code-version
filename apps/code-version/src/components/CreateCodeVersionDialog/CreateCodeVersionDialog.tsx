@@ -6,35 +6,7 @@ import { initialData, initialVersions } from './constants';
 import useFieldValues from './useFieldValues';
 import Field from './Field';
 import CreateBtn from './CreateBtn';
-
-// Define a helper function
-/**
- *
- * @param versionsData - array
- * @param indexToUpdate - current or previous versions index
- * @param newTextAreaValues - new values to set
- * @returns
- */
-const updateVersions = (
-  versionsData: Versions,
-  indexToUpdate: number,
-  newTextAreaValues: Version
-) => {
-  if (versionsData[indexToUpdate] !== undefined) {
-    return versionsData.map((item, index) => {
-      if (index === indexToUpdate) {
-        return newTextAreaValues;
-      }
-      return item;
-    });
-  }
-
-  return [
-    ...versionsData.slice(0, indexToUpdate),
-    newTextAreaValues,
-    ...versionsData.slice(indexToUpdate + 1),
-  ];
-};
+import { updateVersions } from './utils';
 
 export default function CreateCodeVersionDialog() {
   const [{ currentVersion, previousVersion }, setVersion] =
@@ -50,10 +22,11 @@ export default function CreateCodeVersionDialog() {
   } = useFieldValues();
 
   const handleCreate = () => {
+    const textAreaValues = getTextAreaValues();
     const versionsSubmitData = updateVersions(
       versions,
       currentVersion,
-      getTextAreaValues()
+      textAreaValues
     );
 
     console.log(versionsSubmitData, getNameValue());
@@ -61,8 +34,10 @@ export default function CreateCodeVersionDialog() {
 
   useEffect(() => {
     if (previousVersion === null) return;
+
+    const textAreaValues = getTextAreaValues();
     setVersions((prevVersions) =>
-      updateVersions(prevVersions, previousVersion, getTextAreaValues())
+      updateVersions(prevVersions, previousVersion, textAreaValues)
     );
   }, [getTextAreaValues, previousVersion]);
 
