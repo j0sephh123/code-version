@@ -96,23 +96,19 @@ export default function CodeVersion({ codeBlock }: Props) {
         </button>
       </div>
       {shouldShowDraftCode ? (
-        <div>
-          <h3>Draft</h3>
-
-          <div className="join">
-            <button
-              onClick={() => dialogOpen(DialogTypes.insertCode)}
-              className="btn btn-secondary join-item"
-            >
-              Insert Code
-            </button>
-            <button
-              onClick={() => dialogOpen(DialogTypes.insertExplanation)}
-              className="btn btn-secondary join-item"
-            >
-              Insert Explanation
-            </button>
-          </div>
+        <div className="join">
+          <button
+            onClick={() => dialogOpen(DialogTypes.insertCode)}
+            className="btn btn-secondary join-item"
+          >
+            Insert Code
+          </button>
+          <button
+            onClick={() => dialogOpen(DialogTypes.insertExplanation)}
+            className="btn btn-secondary join-item"
+          >
+            Insert Explanation
+          </button>
         </div>
       ) : (
         <div

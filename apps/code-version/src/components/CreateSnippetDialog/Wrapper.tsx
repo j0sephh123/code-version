@@ -1,38 +1,33 @@
-import { PropsWithChildren } from 'react';
-import { bindDialogControls, dialogClose, useStore } from '../../store';
-import { dialogLabels } from '../../constants';
+import { PropsWithChildren, useCallback } from 'react';
+import { bindDialogControls, dialogClose } from '../../store';
 
-export default function Wrapper({ children }: PropsWithChildren) {
+export default function Wrapper({
+  children,
+  type,
+}: { type: string } & PropsWithChildren) {
+  const refCallback = useCallback(
+    (ref: HTMLDialogElement | null) => {
+      bindDialogControls(ref?.showModal.bind(ref), ref?.close.bind(ref));
+    },
+    []
+  );
+
   return (
     <dialog
       onClose={(e) => {
         e.preventDefault();
         dialogClose();
       }}
-      ref={(ref) =>
-        bindDialogControls(ref?.showModal.bind(ref), ref?.close.bind(ref))
-      }
+      ref={refCallback}
       className="modal"
     >
-      <DialogContent>{children}</DialogContent>
-    </dialog>
-  );
-}
-
-function DialogContent({ children }: PropsWithChildren) {
-  const { type } = useStore();
-
-  if (type === null) return null;
-
-  return (
-    <>
       <form method="dialog" className="modal-box">
-        <h3 className="font-bold text-lg">{dialogLabels[type]}</h3>
+        <h3 className="font-bold text-lg">{type}</h3>
         {children}
       </form>
       <form method="dialog" className="modal-backdrop">
         <button>close</button>
       </form>
-    </>
+    </dialog>
   );
 }
