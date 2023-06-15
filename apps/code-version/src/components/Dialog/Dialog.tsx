@@ -4,33 +4,54 @@ import Field from './Field';
 import { useState } from 'react';
 import { dialogClose, useStore } from '../../store';
 import { dialogLabels } from '../../constants';
-import { DialogTypes } from '../../types';
+import { transformDialogTypeFieldForApi } from '../../utils';
 
 export default function CreateSnippetDialog() {
-  const [name, setName] = useState('');
-  const { type } = useStore();
+  const [value, setValue] = useState('');
+  const { type, versionId } = useStore();
 
   const handleCreate = async () => {
-    await fetch('/api/snippets', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ name }),
+    if (type === null) {
+      return;
+    }
+
+    // TODO needs heavy refactoring
+    const key = transformDialogTypeFieldForApi(type);
+    const submitObject: any = {};
+    if (key === 'name') {
+      submitObject['name'] = value;
+    } else {
+      submitObject['fieldName'] = key;
+      submitObject['value'] = value;
+    }
+
+    console.log({
+      versionId,
     });
 
-    setName('');
+    await fetch(
+      `/api/${key === 'name' ? 'snippets' : `versions/${versionId}`}`,
+      {
+        method: key === 'name' ? 'POST' : 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submitObject),
+      }
+    );
+
+    setValue('');
     dialogClose();
   };
 
   return (
-    <Wrapper type={type !== null ? dialogLabels[type] : ""}>
-      {type === DialogTypes.createSnippet && (
-        <>
-          <Field placeholder="Name" value={name} setValue={setName} />
-          <CreateBtn onClick={handleCreate} />
-        </>
-      )}
+    <Wrapper type={type !== null ? dialogLabels[type] : ''}>
+      <Field
+        placeholder={type ? dialogLabels[type] : ''}
+        value={value}
+        setValue={setValue}
+      />
+      <CreateBtn onClick={handleCreate} />
     </Wrapper>
   );
 }

@@ -5,12 +5,14 @@ export type State = {
   dialogShow: (() => void) | undefined;
   dialogClose: (() => void) | undefined;
   type: DialogTypes | null;
+  versionId: string | null;
 };
 
 const state = proxy<State>({
   dialogShow: undefined,
   dialogClose: undefined,
   type: null,
+  versionId: null,
 });
 
 export const bindDialogControls = (
@@ -21,12 +23,20 @@ export const bindDialogControls = (
   state.dialogClose = dialogClose;
 };
 
-export const dialogOpen = (type: DialogTypes) => {
+export const dialogOpen = (type: DialogTypes, versionId: string) => {
   state.type = type;
+  if (versionId) {
+    state.versionId = versionId;
+  }
   state.dialogShow?.();
 };
 
 export const dialogClose = () => {
+  if (state.versionId) {
+    // TODO set to default state instead
+    state.versionId = null;
+  }
+  // TODO set to default state instead
   state.type = null;
   state.dialogClose?.();
 };

@@ -9,7 +9,6 @@ export type Version = {
   _id: string;
   snippetId: string;
   version: number;
-  status: string;
   code: string;
   explanation: string;
   createdAt: Date;

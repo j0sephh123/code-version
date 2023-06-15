@@ -15,17 +15,19 @@ export default function CodeVersion({ codeBlock }: Props) {
   const { code, explanation } = codeBlock['versions'][currentItemIndex];
 
   const addVersionDraft = async () => {
-    const res = await fetch(
-      `/api/snippets/${codeBlock.snippet._id}/add-version`,
-      {
-        method: 'PUT',
-      }
-    );
+    await fetch(`/api/snippets/${codeBlock.snippet._id}/add-version`, {
+      method: 'PUT',
+    });
   };
 
-  const { status } = codeBlock.versions[codeBlock.versions.length - 1];
-  const shouldShowDraftCode =
-    currentItemIndex === totalItems - 1 && status === 'draft';
+  const {
+    _id,
+    code: lastVersionCode,
+    explanation: lastVersionExplanation,
+  } = codeBlock.versions[codeBlock.versions.length - 1];
+  const isLastVersion = currentItemIndex === totalItems - 1;
+  const shouldShowAddVersionButton =
+    lastVersionExplanation.length > 0 && lastVersionCode.length > 0;
 
   return (
     <>
@@ -44,7 +46,7 @@ export default function CodeVersion({ codeBlock }: Props) {
               {page + 1}
             </button>
           ))}
-          {status === 'active' && (
+          {shouldShowAddVersionButton && (
             <button
               onClick={addVersionDraft}
               className="btn join-item btn-success"
@@ -95,35 +97,43 @@ export default function CodeVersion({ codeBlock }: Props) {
           </svg>
         </button>
       </div>
-      {shouldShowDraftCode ? (
-        <div className="join">
+      <div className="join">
+        {isLastVersion && lastVersionCode.length === 0 && (
           <button
-            onClick={() => dialogOpen(DialogTypes.insertCode)}
+            onClick={() => dialogOpen(DialogTypes.insertCode, _id)}
             className="btn btn-secondary join-item"
           >
             Insert Code
           </button>
+        )}
+
+        {isLastVersion && lastVersionExplanation.length === 0 && (
           <button
-            onClick={() => dialogOpen(DialogTypes.insertExplanation)}
+            onClick={() => dialogOpen(DialogTypes.insertExplanation, _id)}
             className="btn btn-secondary join-item"
           >
             Insert Explanation
           </button>
-        </div>
-      ) : (
-        <div
-          className={clsx(
-            'flex',
-            'gap-6',
-            codeBlockWidth === 'Full' && 'flex-wrap'
-          )}
-        >
+        )}
+      </div>
+      <div
+        className={clsx(
+          'flex',
+          'gap-6',
+          codeBlockWidth === 'Full' && 'flex-wrap'
+        )}
+      >
+        {!isLastVersion || (isLastVersion && lastVersionCode.length > 0) ? (
           <CodeBlock codeBlockWidth={codeBlockWidth} code={code} />
+        ) : null}
+
+        {!isLastVersion ||
+        (isLastVersion && lastVersionExplanation.length > 0) ? (
           <div className={codeBlockWidth === 'Half' ? 'w-6/12' : 'w-full'}>
             {explanation}
           </div>
-        </div>
-      )}
+        ) : null}
+      </div>
     </>
   );
 }

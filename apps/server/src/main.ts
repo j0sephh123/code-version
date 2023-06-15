@@ -1,6 +1,5 @@
 import express from 'express';
 import * as path from 'path';
-import mockBlocks from './mockBlocks';
 import { connectDb } from './db';
 import { ObjectId } from 'mongodb';
 
@@ -92,7 +91,7 @@ app.post('/api/snippets', async (req, res) => {
 app.put('/api/snippets/:id/add-version', async (req, res) => {
   const db = await connectDb();
   const { id } = req.params;
-  let { version, status, code, explanation } = req.body;
+  let { version, code, explanation } = req.body;
 
   // Check if the version is less than or equal to 0
   if (version !== undefined && version <= 0) {
@@ -129,7 +128,6 @@ app.put('/api/snippets/:id/add-version', async (req, res) => {
   // If the version is not provided, increment by one
   if (version === undefined) {
     version = maxVersionNumber + 1;
-    status = 'draft';
     code = '';
     explanation = '';
   } else {
@@ -141,7 +139,7 @@ app.put('/api/snippets/:id/add-version', async (req, res) => {
     }
 
     // Validate provided data
-    if (!status || !code || !explanation) {
+    if (!code || !explanation) {
       return res.status(400).send('Incomplete version data provided');
     }
   }
@@ -150,7 +148,6 @@ app.put('/api/snippets/:id/add-version', async (req, res) => {
   const newVersion = {
     snippetId: new ObjectId(id),
     version,
-    status,
     code,
     explanation,
     createdAt: new Date(),
@@ -162,6 +159,8 @@ app.put('/api/snippets/:id/add-version', async (req, res) => {
   return res.status(200).json({ versionId: result.insertedId });
 });
 
+// update version field
+// @fe
 app.put('/api/versions/:id', async (req, res) => {
   const db = await connectDb();
   const { id } = req.params;
@@ -173,7 +172,7 @@ app.put('/api/versions/:id', async (req, res) => {
   }
 
   // Validate field name
-  if (!['code', 'explanation', 'status'].includes(fieldName)) {
+  if (!['code', 'explanation'].includes(fieldName)) {
     return res.status(400).send('Invalid field name provided');
   }
 
