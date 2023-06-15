@@ -15,9 +15,6 @@ export default function SingleCodeVersionPage({ id }: Props) {
       .then(setBlock);
   }, [id]);
 
-  console.log(block);
-  
-
   return (
     <div>
       SingleCodeVersionPage {id}

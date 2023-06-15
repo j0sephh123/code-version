@@ -10,16 +10,28 @@ type Props = {
 export default function CodeVersion({ codeBlock }: Props) {
   const [codeBlockWidth, setCodeBlockWidth] = useState<CodeBlockWidth>('Half');
   const [currentItemIndex, setCurrentItemIndex] = useState(0);
-
-  console.log({ codeBlock });
-
   const totalItems = codeBlock.versions.length;
   const { code, explanation } = codeBlock['versions'][currentItemIndex];
+
+  const addVersionDraft = async () => {
+    const res = await fetch(
+      `/api/snippets/${codeBlock.snippet._id}/add-version`,
+      {
+        method: 'PUT',
+      }
+    );
+
+    console.log(res);
+  };
+
+  const { status } = codeBlock.versions[codeBlock.versions.length - 1];
+  const shouldShowDraftCode =
+    currentItemIndex === totalItems - 1 && status === 'draft';
 
   return (
     <>
       <div className="join pb-4 flex justify-between">
-        <div>
+        <div className="flex">
           {[...Array(totalItems).keys()].map((page) => (
             <button
               onClick={() => setCurrentItemIndex(page)}
@@ -33,6 +45,27 @@ export default function CodeVersion({ codeBlock }: Props) {
               {page + 1}
             </button>
           ))}
+          {status === 'active' && (
+            <button
+              onClick={addVersionDraft}
+              className="btn join-item btn-success"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+            </button>
+          )}
         </div>
 
         <button
@@ -63,18 +96,22 @@ export default function CodeVersion({ codeBlock }: Props) {
           </svg>
         </button>
       </div>
-      <div
-        className={clsx(
-          'flex',
-          'gap-6',
-          codeBlockWidth === 'Full' && 'flex-wrap'
-        )}
-      >
-        <CodeBlock codeBlockWidth={codeBlockWidth} code={code} />
-        <div className={codeBlockWidth === 'Half' ? 'w-6/12' : 'w-full'}>
-          {explanation}
+      {shouldShowDraftCode ? (
+        <div>draft</div>
+      ) : (
+        <div
+          className={clsx(
+            'flex',
+            'gap-6',
+            codeBlockWidth === 'Full' && 'flex-wrap'
+          )}
+        >
+          <CodeBlock codeBlockWidth={codeBlockWidth} code={code} />
+          <div className={codeBlockWidth === 'Half' ? 'w-6/12' : 'w-full'}>
+            {explanation}
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 }
