@@ -1,11 +1,18 @@
 import { Link } from 'wouter';
 import { useEffect, useState } from 'react';
-import { MockBlocks } from '../types';
 
 // TODO add https://daisyui.com/components/badge/
 
 export default function CodeVersionsPage() {
-  const [mockBlocks, setMockBlocks] = useState<MockBlocks | null>(null);
+  const [mockBlocks, setMockBlocks] = useState<
+    | {
+        name: string;
+        versionCount: number;
+      }[]
+    | null
+  >(null);
+
+  console.log(mockBlocks);
 
   useEffect(() => {
     fetch('/api')
@@ -25,14 +32,14 @@ export default function CodeVersionsPage() {
           </tr>
         </thead>
         <tbody>
-          {mockBlocks?.map(({ name, content }, index) => (
+          {mockBlocks?.map(({ name, versionCount }, index) => (
             <tr key={name}>
               <th>{index}</th>
               <td>
                 <Link to={`/code-versions/${index}`}>{name}</Link>
               </td>
 
-              <td>{content.length}</td>
+              <td>{versionCount}</td>
               <td>Actions</td>
             </tr>
           ))}
