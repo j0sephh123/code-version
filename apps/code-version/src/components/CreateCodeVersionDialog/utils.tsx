@@ -7,7 +7,7 @@ import { Versions, Version } from './types';
  * @param newTextAreaValues - new values to set
  * @returns
  */
-export const updateVersions = (
+export const updateVersionInArray = (
   versionsData: Versions,
   indexToUpdate: number,
   newTextAreaValues: Version

@@ -1,10 +1,5 @@
 import { useCallback, createRef } from 'react';
-import { Version } from './types';
-
-type ValueRef = {
-  getValue: () => string;
-  setValue: (val: string) => void;
-};
+import { ValueRef, Version } from './types';
 
 const refs = {
   explanation: createRef<ValueRef>(),
