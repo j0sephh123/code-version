@@ -11,9 +11,11 @@ type Props = {
 export default function CodeVersion({ codeBlock }: Props) {
   const [codeBlockWidth, setCodeBlockWidth] = useState<CodeBlockWidth>('Half');
   const [currentItemIndex, setCurrentItemIndex] = useState(0);
+  // TODO memoize?
   const totalItems = codeBlock.versions.length;
   const { code, explanation } = codeBlock['versions'][currentItemIndex];
 
+  // TODO extract into a method or a hook
   const addVersionDraft = async () => {
     await fetch(`/api/snippets/${codeBlock.snippet._id}/add-version`, {
       method: 'PUT',
@@ -21,14 +23,22 @@ export default function CodeVersion({ codeBlock }: Props) {
   };
 
   const {
-    _id,
+    _id: lastVersionId,
     code: lastVersionCode,
     explanation: lastVersionExplanation,
   } = codeBlock.versions[codeBlock.versions.length - 1];
   const isLastVersion = currentItemIndex === totalItems - 1;
+  // TODO memoize?
   const shouldShowAddVersionButton =
     lastVersionExplanation.length > 0 && lastVersionCode.length > 0;
 
+    /**
+     * TODO Encapsulate Repeated JSX: Extract repeated or complex JSX into separate components. 
+     * The SVG icons in buttons can be turned into components. 
+     * Similarly, buttons used to switch the currentItemIndex could also be a separate component.
+     */
+
+    // TODO revisit Conditional Rendering logic
   return (
     <>
       <div className="join pb-4 flex justify-between">
@@ -100,7 +110,7 @@ export default function CodeVersion({ codeBlock }: Props) {
       <div className="join">
         {isLastVersion && lastVersionCode.length === 0 && (
           <button
-            onClick={() => dialogOpen(DialogTypes.insertCode, _id)}
+            onClick={() => dialogOpen(DialogTypes.insertCode, lastVersionId)}
             className="btn btn-secondary join-item"
           >
             Insert Code
@@ -109,7 +119,7 @@ export default function CodeVersion({ codeBlock }: Props) {
 
         {isLastVersion && lastVersionExplanation.length === 0 && (
           <button
-            onClick={() => dialogOpen(DialogTypes.insertExplanation, _id)}
+            onClick={() => dialogOpen(DialogTypes.insertExplanation, lastVersionId)}
             className="btn btn-secondary join-item"
           >
             Insert Explanation
