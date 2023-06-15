@@ -3,7 +3,7 @@ import TheHeader from './components/TheHeader/TheHeader';
 import CodeVersionsPage from './pages/CodeVersionsPage';
 import SingleCodeVersionPage from './pages/SingleCodeVersionPage';
 import HomePage from './pages/HomePage';
-import CreateSnippetDialog from './components/CreateSnippetDialog/CreateSnippetDialog';
+import CreateSnippetDialog from './components/Dialog/Dialog';
 
 export default function App() {
   return (
