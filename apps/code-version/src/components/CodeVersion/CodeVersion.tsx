@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import CodeBlock, { CodeBlockWidth } from '../CodeBlock/CodeBlock';
 import clsx from 'clsx';
-import { CodeBlockI } from '../../types';
+import { CodeBlockI, DialogTypes } from '../../types';
+import { dialogOpen } from '../../store';
 
 type Props = {
   codeBlock: CodeBlockI;
@@ -20,8 +21,6 @@ export default function CodeVersion({ codeBlock }: Props) {
         method: 'PUT',
       }
     );
-
-    console.log(res);
   };
 
   const { status } = codeBlock.versions[codeBlock.versions.length - 1];
@@ -97,7 +96,24 @@ export default function CodeVersion({ codeBlock }: Props) {
         </button>
       </div>
       {shouldShowDraftCode ? (
-        <div>draft</div>
+        <div>
+          <h3>Draft</h3>
+
+          <div className="join">
+            <button
+              onClick={() => dialogOpen(DialogTypes.insertCode)}
+              className="btn btn-secondary join-item"
+            >
+              Insert Code
+            </button>
+            <button
+              onClick={() => dialogOpen(DialogTypes.insertExplanation)}
+              className="btn btn-secondary join-item"
+            >
+              Insert Explanation
+            </button>
+          </div>
+        </div>
       ) : (
         <div
           className={clsx(

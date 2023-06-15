@@ -1,29 +1,34 @@
 import { proxy, useSnapshot } from 'valtio';
+import { DialogTypes } from './types';
 
 export type State = {
-  modalShow: (() => void) | undefined;
-  modalClose: (() => void) | undefined;
+  dialogShow: (() => void) | undefined;
+  dialogClose: (() => void) | undefined;
+  type: DialogTypes | null;
 };
 
 const state = proxy<State>({
-  modalShow: undefined,
-  modalClose: undefined,
+  dialogShow: undefined,
+  dialogClose: undefined,
+  type: null,
 });
 
-export const bindModalControls = (
-  modalShow: State['modalShow'],
-  modalClose: State['modalClose']
+export const bindDialogControls = (
+  dialogShow: State['dialogShow'],
+  dialogClose: State['dialogClose']
 ) => {
-  state.modalShow = modalShow;
-  state.modalClose = modalClose;
+  state.dialogShow = dialogShow;
+  state.dialogClose = dialogClose;
 };
 
-export const modalOpen = () => {
-  state.modalShow?.();
+export const dialogOpen = (type: DialogTypes) => {
+  state.type = type;
+  state.dialogShow?.();
 };
 
-export const modalClose = () => {
-  state.modalClose?.();
+export const dialogClose = () => {
+  state.type = null;
+  state.dialogClose?.();
 };
 
 export const useStore = () => useSnapshot(state);

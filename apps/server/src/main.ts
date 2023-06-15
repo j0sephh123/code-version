@@ -88,11 +88,11 @@ app.post('/api/snippets', async (req, res) => {
 });
 
 // add a version to a snippet
-// @insomnia
+// @fe
 app.put('/api/snippets/:id/add-version', async (req, res) => {
   const db = await connectDb();
   const { id } = req.params;
-  let { version, status, code, explanation, title } = req.body;
+  let { version, status, code, explanation } = req.body;
 
   // Check if the version is less than or equal to 0
   if (version !== undefined && version <= 0) {
@@ -102,7 +102,9 @@ app.put('/api/snippets/:id/add-version', async (req, res) => {
   // Validate the provided snippet ID
   let snippet;
   try {
-    snippet = await db.collection('snippets').findOne({ _id: new ObjectId(id) });
+    snippet = await db
+      .collection('snippets')
+      .findOne({ _id: new ObjectId(id) });
   } catch (error) {
     return res.status(400).send('Invalid snippet ID provided');
   }
@@ -113,13 +115,16 @@ app.put('/api/snippets/:id/add-version', async (req, res) => {
   }
 
   // Find the highest existing version number for this snippet
-  const maxExistingVersion = await db.collection('versions')
+  const maxExistingVersion = await db
+    .collection('versions')
     .find({ snippetId: new ObjectId(id) })
     .sort({ version: -1 })
     .limit(1)
     .toArray();
 
-  const maxVersionNumber = maxExistingVersion[0] ? maxExistingVersion[0].version : 0;
+  const maxVersionNumber = maxExistingVersion[0]
+    ? maxExistingVersion[0].version
+    : 0;
 
   // If the version is not provided, increment by one
   if (version === undefined) {
@@ -127,15 +132,16 @@ app.put('/api/snippets/:id/add-version', async (req, res) => {
     status = 'draft';
     code = '';
     explanation = '';
-    title = '';
   } else {
     // If version is provided, check if it's exactly one more than the max existing version
     if (version !== maxVersionNumber + 1) {
-      return res.status(400).send('Version must be exactly one more than the latest version');
+      return res
+        .status(400)
+        .send('Version must be exactly one more than the latest version');
     }
 
     // Validate provided data
-    if (!status || !code || !explanation || !title) {
+    if (!status || !code || !explanation) {
       return res.status(400).send('Incomplete version data provided');
     }
   }
@@ -156,57 +162,49 @@ app.put('/api/snippets/:id/add-version', async (req, res) => {
   return res.status(200).json({ versionId: result.insertedId });
 });
 
-
-// delete last version from a snippet
-// @insomnia
-app.delete('/api/snippets/:id/:versionId', async (req, res) => {
+app.put('/api/versions/:id', async (req, res) => {
   const db = await connectDb();
-  const { id, versionId } = req.params;
+  const { id } = req.params;
+  const { fieldName, value } = req.body;
 
-  // Validate the provided snippet ID and version ID
-  let snippet, version;
+  // Validate provided data
+  if (!fieldName || !value) {
+    return res.status(400).send('Incomplete update data provided');
+  }
+
+  // Validate field name
+  if (!['code', 'explanation', 'status'].includes(fieldName)) {
+    return res.status(400).send('Invalid field name provided');
+  }
+
+  // Validate the provided version ID
+  let version;
   try {
-    snippet = await db
-      .collection('snippets')
-      .findOne({ _id: new ObjectId(id) });
     version = await db
       .collection('versions')
-      .findOne({ _id: new ObjectId(versionId) });
+      .findOne({ _id: new ObjectId(id) });
   } catch (error) {
-    return res.status(400).send('Invalid snippet ID or version ID provided');
+    return res.status(400).send('Invalid version ID provided');
   }
 
-  // If the snippet or version doesn't exist, return a 404 error
-  if (!snippet || !version) {
-    return res.status(404).send('Snippet or version not found');
+  // If the version doesn't exist, return a 404 error
+  if (!version) {
+    return res.status(404).send('Version not found');
   }
 
-  // Check if the version belongs to the snippet
-  if (!version.snippetId.equals(snippet._id)) {
-    return res.status(400).send('The version does not belong to the snippet');
-  }
-
-  // Find the highest existing version number for this snippet
-  const maxExistingVersion = await db
+  // Update the version field
+  const updateResult = await db
     .collection('versions')
-    .find({ snippetId: new ObjectId(id) })
-    .sort({ version: -1 })
-    .limit(1)
-    .toArray();
+    .updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { [fieldName]: value, updatedAt: new Date() } }
+    );
 
-  const maxVersionNumber = maxExistingVersion[0]
-    ? maxExistingVersion[0].version
-    : 0;
-
-  // Check if the provided version is the highest version
-  if (version.version !== maxVersionNumber) {
-    return res.status(400).send('Only the highest version can be deleted');
+  if (updateResult.modifiedCount === 0) {
+    return res.status(400).send('The update was not successful');
   }
 
-  // Delete the version
-  await db.collection('versions').deleteOne({ _id: new ObjectId(versionId) });
-
-  return res.status(200).send('Version deleted');
+  return res.status(200).send('Update successful');
 });
 
 // clear db

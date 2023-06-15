@@ -20,3 +20,9 @@ export type CodeBlockI = {
   snippet: Snippet;
   versions: Version[];
 };
+
+export enum DialogTypes  {
+  createSnippet,
+  insertCode,
+  insertExplanation,
+}

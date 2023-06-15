@@ -1,5 +1,6 @@
 import { Link } from 'wouter';
-import { modalOpen } from '../../store';
+import { dialogOpen } from '../../store';
+import { DialogTypes } from '../../types';
 
 /* eslint-disable jsx-a11y/anchor-is-valid */
 export default function TheHeader() {
@@ -15,7 +16,10 @@ export default function TheHeader() {
       </div>
 
       <div className="navbar-end">
-        <button onClick={modalOpen} className="btn btn-ghost btn-circle">
+        <button
+          onClick={() => dialogOpen(DialogTypes.createSnippet)}
+          className="btn btn-ghost btn-circle"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
