@@ -3,7 +3,6 @@ import TheHeader from './components/TheHeader/TheHeader';
 import CodeVersionsPage from './pages/CodeVersionsPage';
 import SingleCodeVersionPage from './pages/SingleCodeVersionPage';
 import HomePage from './pages/HomePage';
-import CreateCodeVersionDialog from './components/CreateCodeVersionDialog/CreateCodeVersionDialog';
 
 export default function App() {
   return (
@@ -16,7 +15,6 @@ export default function App() {
         <Route path="/code-versions" component={CodeVersionsPage} />
         <Route path="/" component={HomePage} />
       </div>
-      <CreateCodeVersionDialog />
     </>
   );
 }
