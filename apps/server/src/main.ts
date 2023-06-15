@@ -10,6 +10,7 @@ app.use(express.json());
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 // all snippets
+// @fe
 app.get('/api', async (_req, res) => {
   const db = await connectDb();
 
@@ -32,7 +33,8 @@ app.get('/api', async (_req, res) => {
 });
 
 // one snippet
-app.get('/snippets/:id', async (req, res) => {
+// @fe
+app.get('/api/snippets/:id', async (req, res) => {
   const db = await connectDb();
   const { id } = req.params;
 
@@ -61,7 +63,8 @@ app.get('/snippets/:id', async (req, res) => {
 });
 
 // create a snippet
-app.post('/snippets', async (req, res) => {
+// @fe
+app.post('/api/snippets', async (req, res) => {
   const db = await connectDb();
   const { name } = req.body;
 
@@ -85,7 +88,8 @@ app.post('/snippets', async (req, res) => {
 });
 
 // add a version to a snippet
-app.put('/snippets/:id/add-version', async (req, res) => {
+// @insomnia
+app.put('/api/snippets/:id/add-version', async (req, res) => {
   const db = await connectDb();
   const { id } = req.params;
   const { version, status, code, explanation, title } = req.body;
@@ -151,7 +155,8 @@ app.put('/snippets/:id/add-version', async (req, res) => {
 });
 
 // delete last version from a snippet
-app.delete('/snippets/:id/:versionId', async (req, res) => {
+// @insomnia
+app.delete('/api/snippets/:id/:versionId', async (req, res) => {
   const db = await connectDb();
   const { id, versionId } = req.params;
 
@@ -212,20 +217,6 @@ app.delete('/clear-db', async (_req, res) => {
   await db.collection('versions').deleteMany({});
 
   return res.status(200).send('Database cleared');
-});
-
-// old implementation
-// app.get('/api', (req, res) => {
-//   res.json(mockBlocks);
-// });
-
-// old implementation
-app.get('/api/code-versions/:id', (req, res) => {
-  const id = req.params.id;
-
-  const codeBlock = mockBlocks.find((block) => block.id === id);
-
-  res.json(codeBlock);
 });
 
 const port = process.env.PORT || 3333;

@@ -1,15 +1,22 @@
-// Define a type for each content block
-export interface ContentBlock {
+export type Snippet = {
+  _id: string;
   name: string;
+};
+
+export type SnippetWithVersions = Snippet & { versionCount: number };
+
+export type Version = {
+  _id: string;
+  snippetId: string;
+  version: number;
+  status: string;
   code: string;
-  explanation?: string;
-}
+  explanation: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
 
-// Define a type for each mockBlock
-export interface MockBlock {
-  name: string;
-  content: ContentBlock[];
-}
-
-// Then we can define the type for mockBlocks array
-export type MockBlocks = MockBlock[];
+export type CodeBlockI = {
+  snippet: Snippet;
+  versions: Version[];
+};

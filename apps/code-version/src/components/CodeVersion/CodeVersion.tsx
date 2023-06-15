@@ -1,17 +1,20 @@
 import { useState } from 'react';
 import CodeBlock, { CodeBlockWidth } from '../CodeBlock/CodeBlock';
 import clsx from 'clsx';
-import { MockBlock } from '../../types';
+import { CodeBlockI } from '../../types';
 
 type Props = {
-  block: MockBlock;
+  codeBlock: CodeBlockI;
 };
 
-export default function CodeVersion({ block }: Props) {
+export default function CodeVersion({ codeBlock }: Props) {
   const [codeBlockWidth, setCodeBlockWidth] = useState<CodeBlockWidth>('Half');
   const [currentItemIndex, setCurrentItemIndex] = useState(0);
-  const totalItems = block.content.length;
-  const { code, explanation } = block['content'][currentItemIndex];
+
+  console.log({ codeBlock });
+
+  const totalItems = codeBlock.versions.length;
+  const { code, explanation } = codeBlock['versions'][currentItemIndex];
 
   return (
     <>

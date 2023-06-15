@@ -1,23 +1,15 @@
 import { Link } from 'wouter';
 import { useEffect, useState } from 'react';
+import { SnippetWithVersions } from '../types';
 
 // TODO add https://daisyui.com/components/badge/
-
 export default function CodeVersionsPage() {
-  const [mockBlocks, setMockBlocks] = useState<
-    | {
-        name: string;
-        versionCount: number;
-      }[]
-    | null
-  >(null);
-
-  console.log(mockBlocks);
+  const [snippets, setSnippets] = useState<SnippetWithVersions[] | null>(null);
 
   useEffect(() => {
     fetch('/api')
       .then((r) => r.json())
-      .then(setMockBlocks);
+      .then(setSnippets);
   }, []);
 
   return (
@@ -32,11 +24,11 @@ export default function CodeVersionsPage() {
           </tr>
         </thead>
         <tbody>
-          {mockBlocks?.map(({ name, versionCount }, index) => (
+          {snippets?.map(({ name, versionCount, _id }) => (
             <tr key={name}>
-              <th>{index}</th>
+              <th>{_id}</th>
               <td>
-                <Link to={`/code-versions/${index}`}>{name}</Link>
+                <Link to={`/code-versions/${_id}`}>{name}</Link>
               </td>
 
               <td>{versionCount}</td>

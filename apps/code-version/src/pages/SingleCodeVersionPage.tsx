@@ -1,24 +1,27 @@
 import { useEffect, useState } from 'react';
 import CodeVersion from '../components/CodeVersion/CodeVersion';
-import { MockBlock } from '../types';
+import { CodeBlockI } from '../types';
 
 type Props = {
   id: string;
 };
 
 export default function SingleCodeVersionPage({ id }: Props) {
-  const [block, setBlock] = useState<MockBlock | null>(null);
+  const [block, setBlock] = useState<CodeBlockI | null>(null);
 
   useEffect(() => {
-    fetch(`/api/code-versions/${id}`)
+    fetch(`/api/snippets/${id}`)
       .then((r) => r.json())
       .then(setBlock);
   }, [id]);
 
+  console.log(block);
+  
+
   return (
     <div>
       SingleCodeVersionPage {id}
-      {block && <CodeVersion block={block} />}
+      {block && <CodeVersion codeBlock={block} />}
     </div>
   );
 }
