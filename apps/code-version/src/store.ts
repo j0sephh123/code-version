@@ -23,7 +23,7 @@ export const bindDialogControls = (
   state.dialogClose = dialogClose;
 };
 
-export const dialogOpen = (type: DialogTypes, versionId: string) => {
+export const dialogOpen = (type: DialogTypes, versionId: State['versionId']) => {
   state.type = type;
   if (versionId) {
     state.versionId = versionId;
