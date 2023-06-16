@@ -3,10 +3,12 @@ import CodeBlock, { CodeBlockWidth } from '../CodeBlock/CodeBlock';
 import clsx from 'clsx';
 import { CodeBlockI, DialogTypes } from '../../types';
 import { dialogOpen } from '../../store';
-import PlusIcon from '../../icons/PlusIcon';
-import TrashIcon from '../../icons/TrashIcon';
-import SplitInHalfIcon from '../../icons/SplitInHalfIcon';
-import FullWidthIcon from '../../icons/FullWidthIcon';
+import {
+  PlusIcon,
+  TrashIcon,
+  SplitInHalfIcon,
+  FullWidthIcon,
+} from '../../icons';
 
 type Props = {
   codeBlock: CodeBlockI;
@@ -26,6 +28,7 @@ export default function CodeVersion({ codeBlock }: Props) {
     });
   };
 
+  // TODO extract into a method or a hook
   const handleDeleteLastVersion = async () => {
     await fetch(`/api/snippets/${codeBlock.snippet._id}/delete-version`, {
       method: 'DELETE',

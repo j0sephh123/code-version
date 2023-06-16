@@ -1,6 +1,6 @@
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import CopyIcon from '../../icons/CopyIcon';
+import { CopyIcon } from '../../icons';
 
 export type CodeBlockWidth = 'Half' | 'Full';
 

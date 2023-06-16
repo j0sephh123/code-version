@@ -1,7 +1,7 @@
 import { Link } from 'wouter';
 import { dialogOpen } from '../../store';
 import { DialogTypes } from '../../types';
-import PlusIconRounded from '../../icons/PlusIconRounded';
+import { PlusIconRounded } from '../../icons';
 
 /* eslint-disable jsx-a11y/anchor-is-valid */
 export default function TheHeader() {
