@@ -23,6 +23,5 @@
     "src/**/*.jsx",
     "src/**/*.ts",
     "src/**/*.tsx",
-    "src/mockBlocks.ts"
   ]
 }
