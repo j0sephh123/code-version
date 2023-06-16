@@ -206,6 +206,55 @@ app.put('/api/versions/:id', async (req, res) => {
   return res.status(200).send('Update successful');
 });
 
+// delete last version
+// delete a version from a snippet if it's the last one
+// @fe
+app.delete('/api/snippets/:id/delete-version', async (req, res) => {
+  const db = await connectDb();
+  const { id } = req.params;
+
+  // Validate the provided snippet ID
+  let snippet;
+  try {
+    snippet = await db
+      .collection('snippets')
+      .findOne({ _id: new ObjectId(id) });
+  } catch (error) {
+    return res.status(400).send('Invalid snippet ID provided');
+  }
+
+  // If the snippet doesn't exist, return a 404 error
+  if (!snippet) {
+    return res.status(404).send('Snippet not found');
+  }
+
+  // Find all versions related to this snippet
+  const versions = await db
+    .collection('versions')
+    .find({ snippetId: new ObjectId(id) })
+    .sort({ version: -1 }) // We sort versions in descending order
+    .toArray();
+
+  // If there are no versions for this snippet, return a 404 error
+  if (versions.length === 0) {
+    return res.status(404).send('No versions available for deletion');
+  }
+
+  // Get the latest version (which is the first one due to our sorting)
+  const latestVersion = versions[0];
+
+  // Delete the latest version
+  const deleteResult = await db
+    .collection('versions')
+    .deleteOne({ _id: new ObjectId(latestVersion._id) });
+
+  if (deleteResult.deletedCount === 0) {
+    return res.status(400).send('The deletion was not successful');
+  }
+
+  return res.status(200).send('Version deletion successful');
+});
+
 // clear db
 app.delete('/clear-db', async (_req, res) => {
   const db = await connectDb();
