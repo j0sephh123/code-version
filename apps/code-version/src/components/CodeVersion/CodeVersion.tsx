@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import CodeBlock, { CodeBlockWidth } from '../CodeBlock/CodeBlock';
 import clsx from 'clsx';
 import { CodeBlockI, DialogTypes } from '../../types';
@@ -9,17 +9,61 @@ import {
   SplitInHalfIcon,
   FullWidthIcon,
 } from '../../icons';
+import { useDebounce } from '../../hooks/useDebounce';
 
 type Props = {
   codeBlock: CodeBlockI;
 };
 
 export default function CodeVersion({ codeBlock }: Props) {
+  const firstUpdate = useRef(true);
   const [codeBlockWidth, setCodeBlockWidth] = useState<CodeBlockWidth>('Half');
   const [currentItemIndex, setCurrentItemIndex] = useState(0);
   // TODO memoize?
   const totalItems = codeBlock.versions.length;
-  const { code, explanation } = codeBlock['versions'][currentItemIndex];
+  const {
+    code,
+    explanation,
+    _id: currentVersionId,
+  } = codeBlock['versions'][currentItemIndex];
+
+  const [textAreaValue, setTextAreaValue] = useState(explanation);
+
+  const debouncedValue = useDebounce<string>(textAreaValue, 500);
+
+  useEffect(() => {
+    setTextAreaValue(explanation);
+    console.log('explanation chjanged', explanation);
+  }, [explanation]);
+
+  // TODO extract into a method or a hook
+  const handleUpdateVersionField = async (
+    versionId: string,
+    fieldName: string,
+    value: string
+  ) => {
+    await fetch(`/api/versions/${versionId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ fieldName, value }),
+    });
+  };
+
+  useEffect(() => {
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
+  
+    console.log({
+      currentVersionId,
+      debouncedValue,
+    });
+  
+    handleUpdateVersionField(currentVersionId, 'explanation', debouncedValue);
+  }, [currentVersionId, debouncedValue]);
 
   // TODO extract into a method or a hook
   const addVersionDraft = async () => {
@@ -132,9 +176,18 @@ export default function CodeVersion({ codeBlock }: Props) {
 
         {!isLastVersion ||
         (isLastVersion && lastVersionExplanation.length > 0) ? (
-          <div className={codeBlockWidth === 'Half' ? 'w-6/12' : 'w-full'}>
-            {explanation}
-          </div>
+          // <div className={codeBlockWidth === 'Half' ? 'w-6/12' : 'w-full'}>
+          //   {explanation}
+          // </div>
+
+          <textarea
+            value={textAreaValue}
+            onChange={(e) => setTextAreaValue(e.target.value)}
+            className={`${
+              codeBlockWidth === 'Half' ? 'w-6/12' : 'w-full'
+            } textarea textarea-lg`}
+            placeholder="Bio"
+          ></textarea>
         ) : null}
       </div>
     </>

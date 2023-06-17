@@ -9,7 +9,6 @@ app.use(express.json());
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 // all snippets
-// @fe
 app.get('/api', async (_req, res) => {
   const db = await connectDb();
 
@@ -32,7 +31,6 @@ app.get('/api', async (_req, res) => {
 });
 
 // one snippet
-// @fe
 app.get('/api/snippets/:id', async (req, res) => {
   const db = await connectDb();
   const { id } = req.params;
@@ -62,7 +60,6 @@ app.get('/api/snippets/:id', async (req, res) => {
 });
 
 // create a snippet
-// @fe
 app.post('/api/snippets', async (req, res) => {
   const db = await connectDb();
   const { name } = req.body;
@@ -87,7 +84,6 @@ app.post('/api/snippets', async (req, res) => {
 });
 
 // add a version to a snippet
-// @fe
 app.put('/api/snippets/:id/add-version', async (req, res) => {
   const db = await connectDb();
   const { id } = req.params;
@@ -160,11 +156,16 @@ app.put('/api/snippets/:id/add-version', async (req, res) => {
 });
 
 // update version field
-// @fe
+/**
+ * @param id
+ * @body fieldName, value
+ */
 app.put('/api/versions/:id', async (req, res) => {
   const db = await connectDb();
   const { id } = req.params;
   const { fieldName, value } = req.body;
+
+  console.log(req.body)
 
   // Validate provided data
   if (!fieldName || !value) {

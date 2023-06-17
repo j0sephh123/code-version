@@ -3,7 +3,6 @@ import { dialogOpen } from '../../store';
 import { DialogTypes } from '../../types';
 import { PlusIconRounded } from '../../icons';
 
-/* eslint-disable jsx-a11y/anchor-is-valid */
 export default function TheHeader() {
   return (
     <div className="navbar bg-base-100">
